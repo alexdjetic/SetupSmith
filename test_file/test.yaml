@@ -1,0 +1,5 @@
+name: SetupSmith
+version: 1.0
+config:
+  format: YAML
+  enabled: true
