@@ -81,3 +81,16 @@ impl Yaml {
         Ok((data, contents))
     }
 }
+
+pub fn open_yaml(file_path: &str) -> Result<Yaml, Box<dyn std::error::Error>> {
+    // Attempt to create a Yaml instance and load data
+    let yaml = match Yaml::new(file_path) {
+        Ok(yaml) => yaml,
+        Err(e) => {
+            return Err(e);
+        }
+    };
+
+    // Return the Yaml instance
+    Ok(yaml)
+}

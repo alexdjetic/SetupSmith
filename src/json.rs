@@ -81,3 +81,15 @@ impl Json {
         Ok((data, contents))
     }
 }
+
+pub fn open_json(file_path: &str) -> Result<Json, Box<dyn std::error::Error>> {
+    // Attempt to create a Json instance and load data
+    let json = match Json::new(file_path) {
+        Ok(json) => json,
+        Err(e) => {
+            return Err(e);
+        }
+    };
+
+    Ok(json)
+}

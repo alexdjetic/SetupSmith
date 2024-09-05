@@ -1,0 +1,6 @@
+hostname: "host"
+package_manager: "pacman"
+packages:
+  - firefox
+  - discord
+  - obs
