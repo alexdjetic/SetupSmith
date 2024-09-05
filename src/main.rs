@@ -34,6 +34,7 @@ fn open_json() -> Result<(), Box<dyn std::error::Error>> {
         }
     };
 
+
     // Access a specific key from the JSON data
     match json.get("name") {
         Some(value) => println!("Value for 'name': {:?}", value),
