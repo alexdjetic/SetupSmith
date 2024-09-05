@@ -2,20 +2,36 @@ use std::process::Command;
 use std::io::{self, ErrorKind};
 
 #[cfg(unix)]
-fn is_running_as_root() -> bool {
+use nix::unistd::geteuid;
+
+
+pub fn is_running_as_root() -> bool {
+    #[cfg(unix)]
+    {
+        is_running_as_root_unix()
+    }
+
+    #[cfg(windows)]
+    {
+        is_running_as_root_win()
+    }
+}
+
+#[cfg(unix)]
+fn is_running_as_root_unix() -> bool {
     // On Unix-like systems, check if the effective user ID is 0 (root)
-    nix::unistd::geteuid().is_root()
+    geteuid().is_root()
 }
 
 #[cfg(windows)]
-fn is_running_as_root() -> bool {
-    // On Windows, use the `net session` command to check if the user is an administrator
-    let output = Command::new("net")
-        .arg("session")
-        .output()
-        .expect("Failed to check if running as administrator");
+fn is_running_as_root_win() -> bool {
+    use whoami::PrivilegeLevel;
 
-    output.status.success()
+    // Check if the user has administrative privileges
+    match whoami::privilege_level() {
+        PrivilegeLevel::Administrator => true,
+        _ => false,
+    }
 }
 
 pub fn rename_computer(new_name: &str) -> io::Result<()> {
@@ -52,7 +68,6 @@ fn rename_computer_linux(new_name: &str) -> io::Result<()> {
         .status()?;
 
     if status.success() {
-        println!("Successfully renamed the computer to '{}'", new_name);
         Ok(())
     } else {
         Err(io::Error::new(ErrorKind::Other, "Failed to rename computer on Linux"))
@@ -69,7 +84,6 @@ fn rename_computer_macos(new_name: &str) -> io::Result<()> {
         .status()?;
 
     if status.success() {
-        println!("Successfully renamed the computer to '{}'", new_name);
         Ok(())
     } else {
         Err(io::Error::new(ErrorKind::Other, "Failed to rename computer on macOS"))
@@ -85,7 +99,6 @@ fn rename_computer_windows(new_name: &str) -> io::Result<()> {
         .status()?;
 
     if status.success() {
-        println!("Successfully renamed the computer to '{}'", new_name);
         Ok(())
     } else {
         Err(io::Error::new(ErrorKind::Other, "Failed to rename computer on Windows"))
