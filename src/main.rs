@@ -1,22 +1,23 @@
 mod yaml;
 mod json;
+mod sys_ops;
 
 use yaml::Yaml;
 use json::Json;
 
 fn open_yaml() -> Result<(), Box<dyn std::error::Error>> {
     // Attempt to create a Yaml instance and load data
-    let yaml = match Yaml::new("test_file/test.yaml") {
+    let yaml = match Yaml::new("example/vm1.yaml") {
         Ok(yaml) => yaml,
         Err(e) => {
             return Err(e);
         }
     };
 
-    // Access a specific key from the YAML data
-    match yaml.get("name") {
-        Some(value) => println!("Value for 'name': {:?}", value),
-        None => println!("Key 'name' not found."),
+    // Access the "hostname" key from the YAML data
+    match yaml.get("hostname") {
+        Some(value) => println!("Value for 'hostname': {:?}", value),
+        None => println!("Key 'hostname' not found."),
     }
 
     // Print the entire data for verification
@@ -49,5 +50,5 @@ fn open_json() -> Result<(), Box<dyn std::error::Error>> {
 
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    open_json()
+    open_yaml()
 }
